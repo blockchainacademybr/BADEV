@@ -1,1 +1,1 @@
-# Blockchain Academy Ethereum Dev
+# Blockchain Academy Ethereum para Desenvolvedores
