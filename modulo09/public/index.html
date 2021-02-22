@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<script src="web3.min.js"></script>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div id="header">
+			<h1>Blockchain Tracking and Payment</h1>
+			<p id="profile">Meu perfil</p>
+			<a id="connect" class="button" onClick="javascript:connect();">Conectar ao Metamask</a>
+		</div>
+		<div id="setup">
+			<h2>Contrato</h2>
+			<div id="deposit_area">
+				<h3>Depósito</h3>
+				<input type="text" name="deposit" id="deposit">
+				<a id="send" class="button" onClick="javascript:deposit();">Enviar depósito</a> <br/>
+			</div>
+			<h3>Aceite</h3>
+			<p id="balance"></p>
+			<a id="accept" class="button" onClick="javascript:accept();">Aceitar termos do contrato</a>
+			<p id="accepted"></p>
+		</div>
+		<div id="main">
+			<h2>Minhas Ações</h2>
+			<p id="status"></p>
+			<p id="step"></p>
+			<a id="next" class="button" onClick="javascript:next();">Concluir etapa</a>
+		</div>
+		<script src="tracking.js"></script>
+		<script type="text/javascript">
+			document.onreadystatechange = () => {
+			  if (document.readyState === 'complete') {
+			    init();
+			  }
+			};
+		</script>
+	</body>
+</html>

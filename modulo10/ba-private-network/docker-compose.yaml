@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+    bootnode:
+        image: ethereum/client-go:alltools-stable
+        tty: true
+        stdin_open: true
+        volumes:
+            - ./chain:/etc/chain
+        ports:
+            - 30301
+        networks:
+            blockchain:
+                 ipv4_address: 172.16.1.2
+        command: bootnode -nodekey /etc/chain/node.key --addr '172.16.1.2:30301' --verbosity 4
+    rpc:
+        image: ethereum/client-go:alltools-stable
+        tty: true
+        stdin_open: true
+        volumes:
+            - ./chain:/etc/chain
+        ports:
+            - "8545:8545" #Substituição do Ganache
+            - 30301
+        networks:
+            blockchain:
+                 ipv4_address: 172.16.1.3
+        command: sh -c 'geth init --datadir data /etc/chain/genesis.json && geth --datadir data --networkid 2112 --bootnodes "enode://9c206132551d48aee128bb9f7587c3f67ec48c384dd2a0cd0f7f9eff4cb6ff02ec36c0c10bbb5f0497b195b746a492d5966ff2ec35377015df0ca4a562743815@172.16.1.2:30301" --nousb --port 30301 --rpcapi="db,eth,net,personal,web3" --rpcaddr 0.0.0.0 --rpccorsdomain="*" --nat extip:172.16.1.3 --rpc ' 
+        depends_on:
+            - bootnode
+    miner:
+        image: ethereum/client-go:alltools-stable
+        tty: true
+        stdin_open: true
+        volumes:
+            - ./chain:/etc/chain
+        ports:
+            - 30302
+        networks:
+            blockchain:
+                 ipv4_address: 172.16.1.4
+        command: sh -c 'geth init --datadir data /etc/chain/genesis.json && geth account import --datadir data --password /etc/chain/passwd /etc/chain/node.key && geth --datadir data --networkid 2112 --bootnodes "enode://9c206132551d48aee128bb9f7587c3f67ec48c384dd2a0cd0f7f9eff4cb6ff02ec36c0c10bbb5f0497b195b746a492d5966ff2ec35377015df0ca4a562743815@172.16.1.2:30301" --nousb --port 30302 --unlock 0x9DB191Ec41D106AF9f6c7BCB1E8DCa3F308BED30 --miner.gasprice 10000 --password /etc/chain/passwd --nat extip:172.16.1.4 --mine'
+        depends_on:
+            - bootnode
+networks:
+    blockchain:
+        external:
+            name: blockchain
+            # docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 blockchain
